@@ -1,18 +1,13 @@
-# 🖥️ React Native Base Project
+# 🖥️ Go Barber
 
 <h1 align="center">
-  <img src=".github/logo.png" width="200px" />
+  <img alt="React Native" src=".github/logo.png" width="200px" />
 </h1>
 
 ## 🔎️ Description
-React Native base application with default configurations to be used as a faster start for new projects. This base was created by using React Native CLI.
+Mobile side of GoBarber project.
 
-## 👀️ Settings made in this base project:
-
-- .editorconfig
-- ESLint
-- Prettier
-- Folders structure
+This project was made during the <a href="https://rocketseat.com.br/gostack">GoStack Boot Camp</a> in 2020.
 
 ## 🚀️ Technologies
 
