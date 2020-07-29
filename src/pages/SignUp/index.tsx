@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useCallback } from 'react';
 import {
   Image,
   View,
@@ -7,6 +7,8 @@ import {
   Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { FormHandles } from '@unform/core';
+import { Form } from '@unform/mobile';
 import Icon from 'react-native-vector-icons/Feather';
 
 import Input from '../../components/Input';
@@ -16,6 +18,11 @@ import { Container, Title, BackToSignIn, BackToSignInText } from './styles';
 
 const SignUp: React.FC = () => {
   const navigation = useNavigation();
+  const formRef = useRef<FormHandles>(null);
+
+  const handleSignUp = useCallback((data: object) => {
+    console.log(data);
+  }, []);
 
   return (
     <>
@@ -33,22 +40,20 @@ const SignUp: React.FC = () => {
             <View>
               <Title>Create your account</Title>
             </View>
-            <Input name="name" icon="user" placeholder="Name" />
-            <Input name="email" icon="mail" placeholder="Email" />
-            <Input
-              name="password"
-              icon="lock"
-              placeholder="Password"
-              secureTextEntry
-            />
+            <Form onSubmit={handleSignUp} ref={formRef}>
+              <Input name="name" icon="user" placeholder="Name" />
+              <Input name="email" icon="mail" placeholder="Email" />
+              <Input
+                name="password"
+                icon="lock"
+                placeholder="Password"
+                secureTextEntry
+              />
 
-            <Button
-              onPress={() => {
-                console.log('iauza');
-              }}
-            >
-              Create
-            </Button>
+              <Button onPress={() => formRef.current?.submitForm()}>
+                Create
+              </Button>
+            </Form>
           </Container>
         </ScrollView>
       </KeyboardAvoidingView>
