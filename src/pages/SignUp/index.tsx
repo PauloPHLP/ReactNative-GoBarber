@@ -5,23 +5,67 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  TextInput,
+  Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/mobile';
 import Icon from 'react-native-vector-icons/Feather';
 
+import * as Yup from 'yup';
+import api from '../../services/api';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import logoImg from '../../assets/logo.png';
+import getValidationErrors from '../../utils/getValidationErros';
 import { Container, Title, BackToSignIn, BackToSignInText } from './styles';
+
+interface SignUpFormData {
+  name: string;
+  email: string;
+  password: string;
+}
 
 const SignUp: React.FC = () => {
   const navigation = useNavigation();
   const formRef = useRef<FormHandles>(null);
+  const emailInputRef = useRef<TextInput>(null);
+  const passwordInputRef = useRef<TextInput>(null);
 
-  const handleSignUp = useCallback((data: object) => {
-    console.log(data);
+  const handleSignUp = useCallback(async (data: SignUpFormData) => {
+    try {
+      formRef.current?.setErrors([]);
+
+      const schema = Yup.object().shape({
+        name: Yup.string().required('Fill name field'),
+        email: Yup.string().required('Fill e-mail field').email(),
+        password: Yup.string().min(
+          6,
+          'Password should have at least 6 characters',
+        ),
+      });
+
+      await schema.validate(data, {
+        abortEarly: false,
+      });
+
+      await api.post('/users', data);
+
+      Alert.alert('Success!', 'Now you can sign in on GoBarber app!');
+
+      navigation.goBack();
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        const errors = getValidationErrors(error);
+
+        formRef.current?.setErrors(errors);
+
+        return;
+      }
+
+      Alert.alert('Sommething went wrong!', 'Check your credentials');
+    }
   }, []);
 
   return (
@@ -41,12 +85,34 @@ const SignUp: React.FC = () => {
               <Title>Create your account</Title>
             </View>
             <Form onSubmit={handleSignUp} ref={formRef}>
-              <Input name="name" icon="user" placeholder="Name" />
-              <Input name="email" icon="mail" placeholder="Email" />
               <Input
+                name="name"
+                icon="user"
+                placeholder="Name"
+                autoCorrect
+                autoCapitalize="words"
+                returnKeyType="next"
+                onSubmitEditing={() => emailInputRef.current?.focus()}
+              />
+              <Input
+                ref={emailInputRef}
+                name="email"
+                icon="mail"
+                placeholder="Email"
+                keyboardType="email-address"
+                autoCorrect={false}
+                autoCapitalize="none"
+                returnKeyType="next"
+                onSubmitEditing={() => passwordInputRef.current?.focus()}
+              />
+              <Input
+                ref={passwordInputRef}
                 name="password"
                 icon="lock"
                 placeholder="Password"
+                textContentType="newPassword"
+                returnKeyType="send"
+                onSubmitEditing={() => formRef.current?.submitForm()}
                 secureTextEntry
               />
 
