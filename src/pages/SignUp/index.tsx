@@ -33,40 +33,43 @@ const SignUp: React.FC = () => {
   const emailInputRef = useRef<TextInput>(null);
   const passwordInputRef = useRef<TextInput>(null);
 
-  const handleSignUp = useCallback(async (data: SignUpFormData) => {
-    try {
-      formRef.current?.setErrors([]);
+  const handleSignUp = useCallback(
+    async (data: SignUpFormData) => {
+      try {
+        formRef.current?.setErrors([]);
 
-      const schema = Yup.object().shape({
-        name: Yup.string().required('Fill name field'),
-        email: Yup.string().required('Fill e-mail field').email(),
-        password: Yup.string().min(
-          6,
-          'Password should have at least 6 characters',
-        ),
-      });
+        const schema = Yup.object().shape({
+          name: Yup.string().required('Fill name field'),
+          email: Yup.string().required('Fill e-mail field').email(),
+          password: Yup.string().min(
+            6,
+            'Password should have at least 6 characters',
+          ),
+        });
 
-      await schema.validate(data, {
-        abortEarly: false,
-      });
+        await schema.validate(data, {
+          abortEarly: false,
+        });
 
-      await api.post('/users', data);
+        await api.post('/users', data);
 
-      Alert.alert('Success!', 'Now you can sign in on GoBarber app!');
+        Alert.alert('Success!', 'Now you can sign in on GoBarber app!');
 
-      navigation.goBack();
-    } catch (error) {
-      if (error instanceof Yup.ValidationError) {
-        const errors = getValidationErrors(error);
+        navigation.goBack();
+      } catch (error) {
+        if (error instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(error);
 
-        formRef.current?.setErrors(errors);
+          formRef.current?.setErrors(errors);
 
-        return;
+          return;
+        }
+
+        Alert.alert('Sommething went wrong!', 'Check your credentials');
       }
-
-      Alert.alert('Sommething went wrong!', 'Check your credentials');
-    }
-  }, []);
+    },
+    [navigation],
+  );
 
   return (
     <>
