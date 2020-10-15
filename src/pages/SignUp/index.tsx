@@ -1,4 +1,7 @@
 import React, { useRef, useCallback } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { FormHandles } from '@unform/core';
+import { Form } from '@unform/mobile';
 import {
   Image,
   View,
@@ -8,18 +11,15 @@ import {
   TextInput,
   Alert,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { FormHandles } from '@unform/core';
-import { Form } from '@unform/mobile';
 import Icon from 'react-native-vector-icons/Feather';
 
 import * as Yup from 'yup';
+import { Container, Title, BackToSignIn, BackToSignInText } from './styles';
 import api from '../../services/api';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import logoImg from '../../assets/logo.png';
 import getValidationErrors from '../../utils/getValidationErros';
-import { Container, Title, BackToSignIn, BackToSignInText } from './styles';
 
 interface SignUpFormData {
   name: string;
