@@ -92,7 +92,7 @@ const SignIn: React.FC = () => {
               <Input
                 name="email"
                 icon="mail"
-                placeholder="Email"
+                placeholder="E-mail"
                 autoCorrect={false}
                 autoCapitalize="none"
                 keyboardType="email-address"
